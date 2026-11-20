@@ -2,21 +2,60 @@
 const producto = "Taza";
 let stock = 5;
 let cantidadEnCarrito = 0;
-let continuar = true;
 
-while (continuar) {
-  const ingreso = prompt(`¿Cuántas ${producto}(s) querés agregar? Hay ${stock}. Escribí ESC para terminar.`);
-
-  if (ingreso === null || ingreso.toUpperCase() === "ESC") {
-    continuar = false;
-    console.log("Compra terminada.");
-  } else if (Number(ingreso) > 0 && Number(ingreso) <= stock) {
-    cantidadEnCarrito += Number(ingreso);
-    stock -= Number(ingreso);
-    console.log(`Agregaste ${ingreso} ${producto}(s).`);
-  } else {
-    console.log("Cantidad no válida o sin stock suficiente.");
-  }
+function pedirCantidad(mensaje) {
+  return prompt(mensaje);
 }
 
-console.log(`Unidades en el carrito: ${cantidadEnCarrito}`);
+function procesarIngreso(ingreso, stockDisponible) {
+  if (ingreso === null || ingreso.trim().toUpperCase() === "ESC") {
+    return { estado: "salir", cantidad: 0 };
+  }
+
+  const cantidad = Number(ingreso);
+
+  if (!Number.isInteger(cantidad) || cantidad <= 0) {
+    return { estado: "invalida", cantidad: 0 };
+  }
+
+  if (cantidad > stockDisponible) {
+    return { estado: "sin-stock", cantidad: 0 };
+  }
+
+  return { estado: "agregar", cantidad: cantidad };
+}
+
+const mostrarResultado = (mensaje, esFinal) => {
+  console.log(mensaje);
+
+  if (esFinal) {
+    alert(mensaje);
+  }
+};
+
+while (true) {
+  const ingreso = pedirCantidad(
+    `¿Cuántas ${producto}(s) querés agregar? Hay ${stock}. Escribí ESC para terminar.`
+  );
+  const resultado = procesarIngreso(ingreso, stock);
+
+  if (resultado.estado === "salir") {
+    break;
+  }
+
+  if (resultado.estado === "invalida") {
+    mostrarResultado("Ingresá una cantidad válida.", false);
+    continue;
+  }
+
+  if (resultado.estado === "sin-stock") {
+    mostrarResultado("No hay stock suficiente.", false);
+    continue;
+  }
+
+  cantidadEnCarrito += resultado.cantidad;
+  stock -= resultado.cantidad;
+  mostrarResultado(`Agregaste ${resultado.cantidad} ${producto}(s).`, false);
+}
+
+mostrarResultado(`Compra terminada. Unidades en el carrito: ${cantidadEnCarrito}`, true);
