@@ -33,6 +33,35 @@ const mostrarResultado = (mensaje, esFinal) => {
   }
 };
 
+function listarProductos(lista) {
+  console.log("--- Productos disponibles ---");
+
+  for (const item of lista) {
+    console.log(`Producto: ${item}`);
+  }
+
+  console.log(`Total: ${lista.length} productos`);
+}
+
+const productosEnStock = ["Taza", "Vela", "Cuaderno", "Jabón", "Bolsa de tela"];
+productosEnStock.push("Llavero");
+productosEnStock.unshift("Set matero");
+
+const productoRetirado = productosEnStock.pop();
+console.log(`Se ha eliminado el elemento: ${productoRetirado}`);
+
+const productoBuscado = prompt("¿Qué producto querés buscar en el catálogo?");
+
+if (productosEnStock.includes(productoBuscado)) {
+  const posicion = productosEnStock.indexOf(productoBuscado);
+  console.log(`${productoBuscado} está en el catálogo, en la posición ${posicion}.`);
+} else {
+  console.log(`${productoBuscado} no está en el catálogo.`);
+}
+
+productosEnStock.splice(2, 1, "Libreta artesanal");
+listarProductos(productosEnStock);
+
 while (true) {
   const ingreso = pedirCantidad(
     `¿Cuántas ${producto}(s) querés agregar? Hay ${stock}. Escribí ESC para terminar.`
